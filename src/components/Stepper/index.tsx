@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 import './index.css'
 const steps = [
     { title: "Step One" },

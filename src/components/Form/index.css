@@ -1,0 +1,29 @@
+.current {
+    display: block;
+    background-color: rgb(46, 71, 72);
+
+}
+
+.hidden {
+    display: none;
+}
+
+input {
+    font-size: larger;
+    /* margin-top: 10px; */
+    margin: 10px auto;
+    width: 95%;
+}
+
+.btn-div {
+    width: 95%;
+    margin: 0px auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+#container{
+    width: 600px;
+    min-height: 400px;
+}
