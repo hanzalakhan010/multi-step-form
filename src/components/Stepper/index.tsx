@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import './index.css'
 const steps = [
     { title: "Step One" },
@@ -7,29 +7,51 @@ const steps = [
     { title: "Step Four" }
 ];
 
+interface State {
+    currentStepIndex: number
+}
+
 const Stepper = () => {
-    const [currentStepIndex, setCurrentStepIndex] = useState(0)
-    function handleNext() {
-        if (currentStepIndex !== steps.length - 1) setCurrentStepIndex(currentStepIndex + 1)
-        return
-    }
-    function handlePrevious() {
-        if (currentStepIndex !== 0) setCurrentStepIndex(currentStepIndex - 1)
-        return
-    }
+
+    const [state, dispatch] = useReducer((state: State, action) => {
+        switch (action.type) {
+            case "next": {
+                if (state.currentStepIndex !== steps.length - 1) return { currentStepIndex: state.currentStepIndex + 1 }
+                return state
+            }
+            case "prev": {
+                if (state.currentStepIndex !== 0) return { currentStepIndex: state.currentStepIndex - 1 }
+                return state
+            }
+            default: return state
+        }
+
+    }, { currentStepIndex: 0 })
+
+
+
+    // const [currentStepIndex, setCurrentStepIndex] = useState(0)
+    // function handleNext() {
+    //     if (currentStepIndex !== steps.length - 1) setCurrentStepIndex(currentStepIndex + 1)
+    //     return
+    // }
+    // function handlePrevious() {
+    //     if (currentStepIndex !== 0) setCurrentStepIndex(currentStepIndex - 1)
+    //     return
+    // }
     return (
         <>
             <div className="steps">
                 {steps.map((step, index) => (
                     <div
                         key={index}
-                        className={`step ${index <= currentStepIndex ? 'current' : ''}`}
+                        className={`step ${index <= state.currentStepIndex ? 'current' : ''}`}
                     >
                         {step.title}
                     </div>))}
             </div>
-            <button onClick={handlePrevious}>Previous</button>
-            <button onClick={handleNext}>Next</button>
+            <button onClick={() => dispatch({ type: "prev" })}>Previous</button>
+            <button onClick={() => dispatch({ type: "next" })}>Next</button>
         </>
     )
 
