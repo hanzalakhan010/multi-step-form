@@ -1,4 +1,4 @@
-import { act, useReducer, type FormEvent } from "react"
+import { useReducer } from "react"
 import './index.css'
 
 interface State {
@@ -6,10 +6,10 @@ interface State {
     form: Record<string, string>
 }
 
-
+type Action = { type: 'next' } | { type: "prev" } | { type: string, payload: Record<string, string> }
 
 const Form = () => {
-    function formReducer(state: State, action) {
+    function formReducer(state: State, action: Action) {
         switch (action.type) {
             case "next": {
                 if (state.currentStepIndex !== steps.length - 1) return { ...state, currentStepIndex: state.currentStepIndex + 1 }
