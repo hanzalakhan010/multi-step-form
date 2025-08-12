@@ -89,7 +89,7 @@ const Form = () => {
                     {step.review && (
                         <div>
                             {
-                                Object.entries(state.form).map((
+                                Object.entries(state.form || {}).map((
                                     [key, value]) => (<p key={key}><strong>{key}:</strong> {value}</p>
                                 ))}
                         </div>
