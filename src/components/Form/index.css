@@ -1,11 +1,19 @@
+.step {
+    margin: 10px;
+    border-radius: 10px;
+    padding: 20px;
+}
+
 .current {
     display: block;
+    /* width: 550px; */
     background-color: rgb(46, 71, 72);
 
 }
 
 .hidden {
     display: none;
+    /* width: 0px!important; */
 }
 
 input {
