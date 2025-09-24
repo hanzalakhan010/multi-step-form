@@ -5,6 +5,17 @@ interface State {
     form: Record<string, string>
 }
 
+interface Field {
+    name: string
+    type: string
+    placeholder: string
+    options?: string[],
+}
+interface Step{
+    title:string,
+    fields?:Field[]
+    review?:boolean
+}
 type Action = { type: 'next' } | { type: "prev" } | { type: string, payload: Record<string, string> }
 
 const Form = () => {
@@ -33,14 +44,24 @@ const Form = () => {
         }
     }
 
-    const steps = [
+    const steps:Step[] = [
         {
             title: "Personal Information",
             fields: [
                 { name: "firstName", type: "text", placeholder: "First Name" },
                 { name: "lastName", type: "text", placeholder: "Last Name" },
                 { name: "email", type: "email", placeholder: "Email" },
-                { name: "phone", type: "tel", placeholder: "Phone Number" }
+                { name: "phone", type: "tel", placeholder: "Phone Number" },
+                {
+                    name: "gender",
+                    type: "select",
+                    placeholder: "Gender",
+                    options: ["Male", "Female", "Other"]
+                }, {
+                    name: "subscribe",
+                    type: "checkbox",
+                    placeholder: "Subscribe to newsletter"
+                }
             ]
         },
         {
@@ -85,7 +106,59 @@ const Form = () => {
     }
 
     let step = steps[state.currentStepIndex]
+    const renderField = (field: Field) => {
+        switch (field.type) {
+            case "select": {
+                return (
+                    <select
+                        key={field.name}
+                        name={field.name}
+                        value={state.form?.[field.name] || ''}
+                        onChange={(e) =>
+                            dispatch({ type: 'change', payload: { name: field.name, value: e.target.value } })
+                        }
+                        className="text-gray-900 bg-white rounded-md border border-gray-300 px-4 py-2 w-full my-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="" disabled>{field.placeholder}</option>
+                        {field.options?.map(f => <option key={f} value={f}>{f}</option>)}
+                    </select>
+                )
+            }
+            case "checkbox": {
+                return (
+                    <label key={field.name} className="flex items-center space-x-2 my-2">
+                        <input
+                            type="checkbox"
+                            name={field.name}
+                            checked={state.form?.[field.name] === 'true'}
+                            onChange={(e) =>
+                                dispatch({
+                                    type: 'change',
+                                    payload: { name: field.name, value: e.target.checked.toString() }
+                                })
+                            }
+                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-white">{field.placeholder}</span>
+                    </label>
+                )
+            }
+            default: {
+                return (
+                    <input
+                        key={field.name}
+                        name={field.name}
+                        type={field.type}
+                        placeholder={field.placeholder}
+                        onChange={handleChange}
+                        value={state.form?.[field.name] || ''}
+                        className="text-gray-900 bg-white rounded-md border border-gray-300 px-4 py-2 w-full my-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                )
+            }
+        }
 
+    }
     return (
         <div className="w-[600px] min-h-[400px] mx-auto p-6">
             <div className="rounded-lg p-6 bg-teal-900 text-white">
@@ -99,17 +172,7 @@ const Form = () => {
                     </div>
                 )}
 
-                {step.fields && step.fields.map(field => (
-                    <input
-                        key={field.name}
-                        name={field.name}
-                        type={field.type}
-                        placeholder={field.placeholder}
-                        onChange={handleChange}
-                        value={state.form?.[field.name] || ''}
-                        className="text-gray-900 bg-white rounded-md border border-gray-300 px-4 py-2 w-full my-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                ))}
+                {step.fields && step.fields.map(field => renderField(field))}
             </div>
 
             <div className="w-full mt-4 flex justify-between">
