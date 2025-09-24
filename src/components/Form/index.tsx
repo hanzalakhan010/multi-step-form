@@ -1,5 +1,4 @@
 import { useReducer } from "react"
-import './index.css'
 
 interface State {
     currentStepIndex: number
@@ -12,11 +11,13 @@ const Form = () => {
     function formReducer(state: State, action: Action) {
         switch (action.type) {
             case "next": {
-                if (state.currentStepIndex !== steps.length - 1) return { ...state, currentStepIndex: state.currentStepIndex + 1 }
+                if (state.currentStepIndex !== steps.length - 1)
+                    return { ...state, currentStepIndex: state.currentStepIndex + 1 }
                 return state
             }
             case "prev": {
-                if (state.currentStepIndex !== 0) return { ...state, currentStepIndex: state.currentStepIndex - 1 }
+                if (state.currentStepIndex !== 0)
+                    return { ...state, currentStepIndex: state.currentStepIndex - 1 }
                 return state
             }
             case "change": {
@@ -29,9 +30,9 @@ const Form = () => {
                 }
             }
             default: return state
-
         }
     }
+
     const steps = [
         {
             title: "Personal Information",
@@ -73,50 +74,71 @@ const Form = () => {
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         let { name, value } = event.target
         dispatch({ type: 'change', payload: { name, value } })
-
     }
+
     function handleNext() {
         dispatch({ type: 'next' })
     }
+
     function handlePrev() {
         dispatch({ type: 'prev' })
     }
-    return (
-        <div id='container'>
-            {steps.map((step, index) => (
-                <div key={index} className={` step ${state.currentStepIndex == index ? "current" : 'hidden'}`}>
-                    <h1>{step.title}</h1>
-                    {step.review && (
-                        <div>
-                            {
-                                Object.entries(state.form || {}).map((
-                                    [key, value]) => (<p key={key}><strong>{key}:</strong> {value}</p>
-                                ))}
-                        </div>
-                    )}
 
-                    {step.fields && step?.fields.map(field => <input
+    let step = steps[state.currentStepIndex]
+
+    return (
+        <div className="w-[600px] min-h-[400px] mx-auto p-6">
+            <div className="rounded-lg p-6 bg-teal-900 text-white">
+                <h1 className="text-2xl font-bold mb-4">{step.title}</h1>
+
+                {step.review && (
+                    <div className="space-y-2">
+                        {Object.entries(state.form || {}).map(([key, value]) => (
+                            <p key={key}><strong>{key}:</strong> {value}</p>
+                        ))}
+                    </div>
+                )}
+
+                {step.fields && step.fields.map(field => (
+                    <input
                         key={field.name}
                         name={field.name}
                         type={field.type}
                         placeholder={field.placeholder}
                         onChange={handleChange}
                         value={state.form?.[field.name] || ''}
-                    />)}
-                </div>
-            ))}
-            <div className="btn-div">
-                {state.currentStepIndex != 0 && (
-                    <button onClick={handlePrev}>Previous</button>
+                        className="text-gray-900 bg-white rounded-md border border-gray-300 px-4 py-2 w-full my-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                ))}
+            </div>
+
+            <div className="w-full mt-4 flex justify-between">
+                {state.currentStepIndex !== 0 && (
+                    <button
+                        onClick={handlePrev}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    >
+                        Previous
+                    </button>
                 )}
                 {state.currentStepIndex < steps.length - 1 ? (
-                    <button onClick={handleNext}>Next</button>
+                    <button
+                        onClick={handleNext}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ml-auto"
+                    >
+                        Next
+                    </button>
                 ) : (
-                    <button onClick={handleNext}>Submit</button>
-
+                    <button
+                        onClick={handleNext}
+                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto"
+                    >
+                        Submit
+                    </button>
                 )}
             </div>
         </div>
     )
 }
+
 export default Form
